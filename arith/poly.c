@@ -339,25 +339,25 @@ static void polymod_random(element_ptr e) {
 }
 
 static void polymod_from_hash(element_ptr e, const void *data, int len) {
-  // TODO: Improve this.
-//   element_t *coeff = e->data;
-  int i, n = polymod_field_degree(e->field), l = len / n, j, jj = 0, jjj, k;
-  char tmp[len + 1];
-  for (i=0; i<n; i++) {
-    tmp[0] = i;
-    k = 0;
-    for(j=0; j<n;j++) {
-        jjj = jj;
-        while(jjj < len) {
-            tmp[++k] = ((char*)data)[jjj];
-            jjj += l;
-        }
-        if((++jj) == n) jj = 0;
+    // TODO: Improve this.
+  //   element_t *coeff = e->data;
+    int i, n = polymod_field_degree(e->field), j, jj = 0, jjj, k;
+    unsigned char tmp[len + 1];
+    for (i=0; i<n; i++) {
+      tmp[0] = i;
+      k = 0;
+      for(j=0; j<n;j++) {
+          jjj = jj;
+          while(jjj < len) {
+              tmp[++k] = ((unsigned char*)data)[jjj];
+              jjj += n;
+          }
+          if((++jj) == n) jj = 0;
+      }
+      if((++jj) == n) jj = 0;
+      element_from_hash(((element_t *)e->data)[i], tmp, len + 1);
     }
-    if((++jj) == n) jj = 0;
-    element_from_hash(((element_t *)e->data)[i], tmp, len + 1);
   }
-}
 
 static size_t poly_out_str(FILE *stream, int base, element_ptr e) {
   int i;

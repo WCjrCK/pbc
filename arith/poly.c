@@ -340,10 +340,22 @@ static void polymod_random(element_ptr e) {
 
 static void polymod_from_hash(element_ptr e, const void *data, int len) {
   // TODO: Improve this.
-  element_t *coeff = e->data;
-  int i, n = polymod_field_degree(e->field);
+//   element_t *coeff = e->data;
+  int i, n = polymod_field_degree(e->field), l = len / n, j, jj = 0, jjj, k;
+  char tmp[len + 1];
   for (i=0; i<n; i++) {
-    element_from_hash(coeff[i], data, len);
+    tmp[0] = i;
+    k = 0;
+    for(j=0; j<n;j++) {
+        jjj = jj;
+        while(jjj < len) {
+            tmp[++k] = ((char*)data)[jjj];
+            jjj += l;
+        }
+        if((++jj) == n) jj = 0;
+    }
+    if((++jj) == n) jj = 0;
+    element_from_hash(((element_t *)e->data)[i], tmp, len + 1);
   }
 }
 
